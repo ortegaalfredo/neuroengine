@@ -26,6 +26,11 @@ class Neuroengine:
         self.key=key
         self.verify_ssl=verify_ssl
 
+    def getModels(self):
+        command = {'command': 'getmodels' }
+        response=self.send(command)
+        return response
+
     #request(): Sends a request to the server and returns the response.
     #Parameters:
     #   prompt: A string representing the prompt message.
@@ -38,9 +43,10 @@ class Neuroengine:
     #Returns:
     #   A string containing the response from the server.
 
+
     def request(self, prompt,temperature=1.0,top_p=0.9,top_k=40,repetition_penalty=1.2,max_new_len=128,seed=0):
         # Create a JSON message
-        data = {
+        command = {
             'message': prompt,
             'temperature': temperature,
             'top_p':top_p,
@@ -49,7 +55,11 @@ class Neuroengine:
             'max_new_len':max_new_len,
             'seed':seed
         }
-        json_data = json.dumps(data)
+        response=self.send(command)
+        return response["reply"]
+
+    def send(self,command):
+        json_data = json.dumps(command)
 
         # Create an HTTP connection
         if (self.verify_ssl):
@@ -65,7 +75,7 @@ class Neuroengine:
         response = connection.getresponse().read().decode()
         connection.close()
         response = json.loads(response)
-        return response["reply"]
+        return response
 
 # Server class, use it to share your LLM
 

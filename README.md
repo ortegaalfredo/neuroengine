@@ -1,3 +1,7 @@
+<p align="center" width="100%">
+<a ><img src="logoai-small.jpg" alt="neuroengine" style="width: 20%; min-width: 300px; display: block; margin: auto;"></a>
+</p>
+
 # Neuroengine LLM API server
 
 NeuroEngine is a platform that allows users to share their LLM (Large Language Model) creations with others. The service provides an easy-to-use JSON API for accessing these models, as well as a optional user-friendly web interface where you can interact with the model as a chat-bot.
