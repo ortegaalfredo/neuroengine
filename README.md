@@ -8,13 +8,13 @@ NeuroEngine is a platform that allows users to share their LLM (Large Language M
 
 ## Connecting to an existing LLM:
 
-This is an example python client, you will need the LLM service name (I.E. 'MYGPT' or 'Guanaco-65b') and an optional key:
+This is an example python client, you will need the LLM service name (I.E. 'MYGPT' or 'Neuroengine-Large') and an optional key:
 
 ```
 from neuroengine import Neuroengine
 
 # Define the server address and port
-service_name = 'MYGPT'
+service_name = 'Neuroengine-Large'
 api=Neuroengine(service_name=service_name)
 
 prompt="Hello!"
@@ -38,7 +38,7 @@ from neuroengine import NeuroengineServer
 # share a local language model (LLM), and reply to prompts using the API
 
 service="MYGPT"
-service_key="DEMO"
+service_key="DEMOKEY"
 
 def answerMessage(prompt):
     # Here you connect to your LLM and answer the prompt
@@ -59,9 +59,9 @@ else:
 server.listen(answerMessage)
 ```
 
-Once you login, a web chatbot is available at https://www.neuroengine.ai/servicename (This feature is still at developemnt)
+Once you login, a web chatbot is available at https://www.neuroengine.ai/servicename (This feature is still in development)
 
-Note: Neuroengine does not locally host any Large Language Models (LLM). It acts as a proxy, allowing remote users to connect to locally hosted LLMs.
+Note: Currently, Neuroengine does not locally host any Large Language Models (LLM). It acts as a proxy, allowing remote users to connect to locally hosted LLMs.
 
 
 

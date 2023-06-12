@@ -60,7 +60,6 @@ class Neuroengine:
 
     def send(self,command):
         json_data = json.dumps(command)
-
         # Create an HTTP connection
         if (self.verify_ssl):
             connection = http.client.HTTPSConnection(self.server_address, self.server_port)
