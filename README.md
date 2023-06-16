@@ -59,7 +59,7 @@ else:
 server.listen(answerMessage)
 ```
 
-Once you login, a web chatbot is available at https://www.neuroengine.ai/servicename (This feature is still in development)
+Once you login, a web chatbot is available at https://www.neuroengine.ai/servicename 
 
 Note: Currently, Neuroengine does not locally host any Large Language Models (LLM). It acts as a proxy, allowing remote users to connect to locally hosted LLMs.
 
