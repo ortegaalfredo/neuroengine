@@ -17,6 +17,7 @@ import time
 import json
 import http.client
 import ssl
+
 # Client class
 class Neuroengine:
     #__init__(): Initializes a new instance of the neuroengine class.
@@ -53,7 +54,9 @@ class Neuroengine:
     #Returns:
     #   A string containing the response from the server.
 
-    def request(self, prompt,temperature=1.0,top_p=0.9,top_k=40,repetition_penalty=1.2,max_new_len=128,seed=0):
+    def request(self, prompt,temperature=1.0,top_p=0.9,top_k=40,repetition_penalty=1.2,max_new_len=128,seed=0,raw=False,tries=5):
+        if (prompt is None):
+            return("")
         # Create a JSON message
         command = {
             'message': prompt,
@@ -62,18 +65,25 @@ class Neuroengine:
             'top_k':top_k,
             'repetition_penalty':repetition_penalty,
             'max_new_len':max_new_len,
-            'seed':seed
+            'seed':seed,
+            'raw' :str(raw)
         }
         try:
-            response=self.send(command)
+            count=0
+            while(count<tries):
+                count+=1
+                response=self.send(command)
+                if int(response["errorcode"])==0:
+                        break
         except:
             response={}
-            response["reply"]="Connection error"
+            response["reply"]="Connection error. Try in a few seconds."
         return response["reply"]
 
     def send(self,command):
         json_data = json.dumps(command)
         # Create an HTTP connection
+        socket.setdefaulttimeout(180)
         if (self.verify_ssl):
             connection = http.client.HTTPSConnection(self.server_address, self.server_port)
         else:
@@ -104,6 +114,7 @@ class NeuroengineServer:
         self.server_port=server_port
 
     def login(self,service_name,service_key):
+        socket.setdefaulttimeout(180)
         # Create a socket object
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Wrap the socket with SSL
@@ -128,7 +139,7 @@ class NeuroengineServer:
             return(-1)
 
     def is_socket_closed(self,sock):
-        if time.time()-self.pingtime>60:
+        if time.time()-self.pingtime>120:
             return True
         else: 
             return False
