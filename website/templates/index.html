@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0px 0; /* Added margin to create space at the top */
+            padding: 0;
+            position: relative; /* Added to set the parent position for scroll indicator */
+        }
+
+	  .scrollable-row {
+	    height: calc(100vh - 90px); /* Adjust the height as needed */
+	    display: block;
+	    overflow-y: scroll;
+	    width: 500px;
+	    overflow-x: hidden;
+	    white-space: normal;
+	  }
+	  .fixed-row {
+	    height: 80px; /* Adjust the height as needed */
+	    position: sticky;
+	    top: 0;
+	  }
+
+	  #send-button[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+	  
+        .user-message {
+	    background-color:#303030;
+            font-size: 20px;	    
+        }
+
+        .bot-reply {
+        }
+
+        .loading {
+            color: gray;
+            font-style: italic;
+        }
+    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='scripts/default.min.css')}}">
+    <script src="{{url_for('static', filename='scripts/markdown-it.min.js')}}"></script>    
+    <script src="{{url_for('static', filename='scripts/highlight.min.js')}}"></script>    
+    <script src="{{url_for('static', filename='scripts/jquery-3.6.0.min.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+            // JavaScript code to convert Markdown to HTML using Showdown
+    var md = window.markdownit({
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return '<pre class="hljs"><code>' + hljs.highlight(lang, str, true).value + '</code></pre>';
+          } catch (__) {}
+        }
+
+        return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+      }
+    });
+			    
+
+
+            $("#message-form").submit(function(event) {
+                event.preventDefault();
+                var message = $("#message").val();
+                var botname = "{{ botname }}";  // Get the botname from the template
+	  	//$("#send-button").attr("disabled", "disabled"); // Disable the send button
+
+                var userMessage = "<p class='user-message'><strong>Question:</strong> " + message + "</p>";
+                $("#chatbox").append(userMessage);
+
+                $("#chatbox").append("<p class='loading'>" + botname + " is typing...</p>");
+                scrollToBottom(); // Scroll to the bottom of the chatbox
+                $.post("/send", {"message": message, "botname": botname}, function(data) {
+                    $("#message").val("");
+                    $(".loading").remove();
+		    var botReply = "<p class='bot-reply'>" + md.render(data.reply) + "</p>";
+                    $("#chatbox").append(botReply);
+                    scrollToBottom(); // Scroll to the bottom of the chatbox
+                    //$("#send-button").removeAttr("disabled"); // Enable the send button		    
+                });
+            });
+
+            function scrollToBottom() {
+                var chatbox = document.getElementById("chatbox");
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+
+        });
+    </script>
+</head>
+<body>
+
+<table>
+  <tr>
+    <td>
+      <div class="scrollable-row" id="chatbox">
+        {% for message in messages %}
+            {% if message == 'loading' %}
+                <p class="loading">{{ botname }} is typing...</p>
+            {% else %}
+                {% if loop.index % 2 == 0 %}
+                    <p class="user-message">{{ message }}</p>
+                {% else %}
+                    <p class="bot-reply">{{ message }}</p>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+	    <!-- main form -->
+	    <div class="fixed-row"><center>
+    <form id="message-form" action="/send" method="post">
+	    <textarea id="message" name="message" placeholder="Enter your message here..." style="width:90%;" > </textarea>
+        <input type="hidden" id="botname" name="botname" value="{{ botname }}">  <!-- Add a hidden input field for botname -->
+        <button id="send-button"type="submit">Send</button>
+    </form>
+    <!-- trigger send on ctrl+enter -->
+  <script>
+    document.getElementById('message').addEventListener('keydown', function(event) {
+      if (event.ctrlKey && event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default behavior of new line creation
+        document.getElementById('send-button').click(); // Simulate a click on the send button
+      }
+    });
+
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+      // Clear the textarea
+      document.getElementById('myTextarea').value = '';
+    });
+  </script>
+
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+
+</body>
+</html>

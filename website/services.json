@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Neuroengine-Large",
+        "key": "--------------",
+        "numreq": 19233,
+        "connected": true,
+        "comment": "<b>uncensored</b> LLM.</br>Current base model is <b>airoboros-70b-GPT4-m2.0</b>.</br>https://huggingface.co/TheBloke/Airoboros-L2-70B-GPT4-m2.0-GPTQ</br>LLama2 license is free for most commercial use.",
+        "operator": "@ortegaalfredo"
+    },
+    {
+        "name": "Neuroengine-Fast",
+        "key": "---------------",
+        "numreq": 571,
+        "connected": true,
+        "comment": "<b>uncensored</b> LLM, 8192 context lenght.</br>Current base model is <b>airoboros-33b-SuperHOT</b>.</br>https://huggingface.co/TheBloke/airoboros-33B-gpt4-1-4-SuperHOT-8K-GPTQ</br>Free for non-commercial use.",
+        "operator": "@ortegaalfredo"
+    },
+    {
+        "name": "Carpincho-Fast",
+        "key": "----------------",
+        "numreq": 1043,
+        "connected": true,
+        "comment": "Fast LLM model, fine-tuned to answer in Argentine colloquial spanish (aka <b>@ArgGPT</b>).</br>Current base model is <b>Carpincho-13b</b>.</br>https://huggingface.co/aao331/Carpincho-13b</br>Free for non-commercial use.",
+        "operator": "@ortegaalfredo"
+    },
+    {
+        "name": "Neuroengine-Beluga",
+        "key": "---------------",
+        "numreq": 0,
+        "connected": true,
+        "comment": "<b>censored (aligned) model</b> LLM.</br>Current base model is <b>stablebeluga-70b</b>.</br>https://huggingface.co/TheBloke/StableBeluga2-70B-GPTQ</br>LLama2 license is free for most commercial use.",
+        "operator": "@ortegaalfredo"
+    },
+    {
+        "name": "Neuroengine-Jesus",
+        "key": "-------------",
+        "numreq": 926,
+        "connected": true,
+        "comment": "Llama2-13B finetuned on the bible and teachings of Christ.</br>Current base model is <b>ChirstGPT-13b-V2</b>.</br>https://huggingface.co/aao331/ChristGPT-13B-V2-GPTQ</br>LLama2 license is free for most commercial use.",
+        "operator": "@ortegaalfredo"
+    }
+]
