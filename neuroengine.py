@@ -17,6 +17,7 @@ import time
 import json
 import http.client
 import ssl
+import sys
 
 # Client class
 class Neuroengine:
@@ -96,7 +97,9 @@ class Neuroengine:
         connection.request('POST', f'/{self.service_name}', json_data, headers)
 
         # Get the response from the server
-        response = connection.getresponse().read().decode()
+        response = connection.getresponse()
+        response = response.read().decode()
+
         connection.close()
         response = json.loads(response)
         return response
@@ -189,3 +192,14 @@ class NeuroengineServer:
                 print(f"Error: {str(e)}")
                 self.pingtime=0
                 pass
+
+if __name__ == "__main__":
+    # Define the server address and port
+    if len(sys.argv)<2:
+        print(f"Usage: {sys.argv[0]} <prompt>")
+        exit(-1)
+    service_name = 'Neuroengine-Large'
+    api=Neuroengine(service_name=service_name)
+    prompt=sys.argv[1]
+    response=api.request(prompt)
+    print(response)
