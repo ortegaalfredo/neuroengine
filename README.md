@@ -27,6 +27,12 @@ print(f"Prompt: {prompt}\nResponse: {response}")
 
 Many models do not require a key for access, but they may still be subject to usage limits or restrictions (quotas).
 
+## Streaming requests
+
+Initial support for streaming is present. For this, you only need to provide an additional parameter: a randomly generated streaming key.
+
+With this key, you can retrieve partial requests, and repeatedly call the API until all tokens are retrieved. For an example, see [streaming-example.py](https://github.com/ortegaalfredo/neuroengine/blob/main/examples/streaming-example.py).
+
 ## Sharing your LLM
 
 To use a locally hosted LLM with the Neuroengine API, you'll need to follow these steps:
@@ -108,7 +114,9 @@ print(response)
         - seed (int): The random seed for generating the response. Use this to control the repeatability of the output. Default is 0.
         - raw (bool): If True, the prompt will be send straight to the model without any pre-prompt or system prompt. Default is False.
         - tries (int): The number of attempts to send the request in case of errors before giving up. Default is 5.
-    Returns:
+	- gettokens (int): The amont of tokens to get in each streaming call, default is 20. This is a partial response, you must call several times using the same streamkey until the function return an empty string.
+        - streamkey (str): An unique ID to identify your stream session. Generate this ID securely, at least 32 bytes. If no streamkey is provided, the request will be not streamed, and the complete reply will be returned in a single call.    
+Returns:
         - str: The generated response or an error message, depending on the success of the request.
 
 #### Raw Json Call
@@ -123,7 +131,10 @@ To make a raw json api call, do a HTTPS POST request to https://api.neuroengine.
     "repetition_penalty": 1.2,
     "max_new_len": 128,
     "seed": 0,
-    "raw": "False"
+    "raw": "False",
+    "key" : "key1234",
+    "gettokens": 20
+
 }
 ```
 Field description:
@@ -143,6 +154,11 @@ Field description:
     -"seed" (int): A random seed used for generating the response. It helps control the reproducibility of the generated output.
 
     -"raw" (str): If True, the prompt will be send straight to the model without any pre-prompt or system prompt. Default is False.
+
+    -"gettokens"(int): The amont of tokens to get in each streaming call, default is 20. This is a partial response, you must call several times using the same streamkey until the function return an empty string.
+
+    -"key" (str): An unique ID to identify your stream session. Generate this ID securely, at least 32 bytes. If no streamkey is provided, the request will be not streamed, and the complete reply will be returned in a single call.
+
 
 These parameters collectively define the settings and characteristics of the response generated based on the provided input prompt.
 

@@ -43,7 +43,7 @@ class Neuroengine:
         response=self.send(command)
         return response
 
-    def request(self, prompt,temperature=1.0,top_p=0.9,top_k=40,repetition_penalty=1.2,max_new_len=128,seed=0,raw=False,tries=5):
+    def request(self, prompt,temperature=1.0,top_p=0.9,top_k=40,repetition_penalty=1.2,max_new_len=128,seed=0,raw=False,tries=5,gettokens=20,streamkey=""):
         """ request(): Sends a request to the server and returns the response.
         Parameters:
         - prompt (str): The text prompt that will be used to generate the response.
@@ -55,6 +55,8 @@ class Neuroengine:
         - seed (int): The random seed for generating the response. Use this to control the reproducibility of the output. Default is 0.
         - raw (bool): If True, the response will be returned as raw JSON string; if False, the reply content will be extracted from the JSON. Default is False.
         - tries (int): The number of attempts to send the request in case of errors before giving up. Default is 5.
+        - gettokens (int): The amont of tokens to get in each streaming call, default is 20. This is a partial response, you must call several times using the same streamkey until the function return an empty string.
+        - streamkey (str): An unique ID to identify your stream session. Generate this ID securely, at least 32 bytes. If no streamkey is provided, the request will be not streamed, and the complete reply will be returned in a single call.
     Returns:
         - str: The generated response or an error message, depending on the success of the request. """
 
@@ -69,7 +71,9 @@ class Neuroengine:
             'repetition_penalty':repetition_penalty,
             'max_new_len':max_new_len,
             'seed':seed,
-            'raw' :str(raw)
+            'raw' :str(raw),
+            'key' : streamkey,
+            'gettokens': gettokens
         }
         try:
             count=0
@@ -169,7 +173,7 @@ class NeuroengineServer:
             try:
                 # Check if there are bytes in the socket
                 if self.has_bytes_to_receive(self.ssl_socket)==False:
-                    time.sleep(1)
+                    time.sleep(0.1)
                     continue
                 # Read bytes
                 data = self.ssl_socket.recv(10240)
