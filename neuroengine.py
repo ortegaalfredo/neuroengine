@@ -82,9 +82,10 @@ class Neuroengine:
                 response=self.send(command)
                 if int(response["errorcode"])==0:
                         break
-        except:
+        except KeyboardInterrupt: sys.exit(0)
+        except Exception as e:
             response={}
-            response["reply"]="Connection error. Try in a few seconds."
+            response["reply"]=f"Connection error. Try in a few seconds ({str(e)})"
         return response["reply"]
 
     def send(self,command):
@@ -136,7 +137,7 @@ class NeuroengineServer:
         logindata["key"]=service_key
         data=json.dumps(logindata)
         self.ssl_socket.sendall(data.encode())
-        response = self.ssl_socket.recv(10240)
+        response = self.ssl_socket.recv(20480)
         if (response.strip().decode()=="OK"):
             self.service_name=service_name
             self.service_key=service_key
@@ -176,7 +177,13 @@ class NeuroengineServer:
                     time.sleep(0.1)
                     continue
                 # Read bytes
-                data = self.ssl_socket.recv(10240)
+                data=b""
+                chunklen=4096
+                while True:
+                    chunk = self.ssl_socket.recv(chunklen)
+                    data+=chunk
+                    if len(chunk)<chunklen: break
+                    if len(data)>(8192*6): break
                 if not data:
                     self.pingtime=0
                     continue
