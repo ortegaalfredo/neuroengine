@@ -43,13 +43,14 @@ class Neuroengine:
         response=self.send(command)
         return response
 
-    def request(self, prompt,temperature=1.0,top_p=0.9,top_k=40,repetition_penalty=1.2,max_new_len=128,seed=0,raw=False,tries=5,gettokens=20,streamkey=""):
+    def request(self, prompt,temperature=1.0,top_p=0.9,min_p=0.0,top_k=40,repetition_penalty=1.2,max_new_len=128,seed=0,raw=False,tries=5,gettokens=20,streamkey=""):
         """ request(): Sends a request to the server and returns the response.
         Parameters:
         - prompt (str): The text prompt that will be used to generate the response.
         - temperature (float): Controls the randomness of the output. Higher values (e.g., 1.0) make the output more random, while lower values (e.g., 0.2) make it more deterministic. Default is 1.0.
         - top_p (float): Determines the cumulative probability threshold for generating the output. Tokens with cumulative probability higher than this value are considered for sampling. Default is 0.9.
         - top_k (int): Controls the number of top tokens to consider for generating the output. Only the top-k tokens are used for sampling. Default is 40.
+        - min_p (float): Activates min_p sampler, works if 0.0<min_p<1.0
         - repetition_penalty (float): Controls the penalty applied to repeated tokens in the output. Higher values (e.g., 1.2) discourage repeating tokens, while lower values (e.g., 0.8) encourage repetition. Default is 1.2.
         - max_new_len (int): Controls the maximum length of the generated response. The response will be truncated if its length exceeds this value. Default is 128.
         - seed (int): The random seed for generating the response. Use this to control the reproducibility of the output. Default is 0.
@@ -68,6 +69,7 @@ class Neuroengine:
             'temperature': temperature,
             'top_p':top_p,
             'top_k':top_k,
+            'min_p':min_p,
             'repetition_penalty':repetition_penalty,
             'max_new_len':max_new_len,
             'seed':seed,
