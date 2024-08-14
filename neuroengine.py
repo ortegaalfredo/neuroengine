@@ -79,21 +79,28 @@ class Neuroengine:
         }
         try:
             count=0
+            timeout=20
+            response={}
+            response["reply"]=f"Error: Interrupted. Try in a few seconds."
+            if streamkey is None:
+                timeout=180 # Longer timeout if trying to do  single request
             while(count<tries):
+             try:
                 count+=1
-                response=self.send(command)
+                response=self.send(command,timeout)
                 if int(response["errorcode"])==0:
                         break
+             except: # timeout
+                 pass
         except KeyboardInterrupt: sys.exit(0)
         except Exception as e:
-            response={}
             response["reply"]=f"Connection error. Try in a few seconds ({str(e)})"
         return response["reply"]
 
-    def send(self,command):
+    def send(self,command,timeout=180):
         json_data = json.dumps(command)
         # Create an HTTP connection
-        socket.setdefaulttimeout(180)
+        socket.setdefaulttimeout(timeout)
         if (self.verify_ssl):
             connection = http.client.HTTPSConnection(self.server_address, self.server_port)
         else:

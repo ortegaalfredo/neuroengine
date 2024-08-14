@@ -18,7 +18,7 @@ from neuroengine import Neuroengine
 # to send prompts to a published service and receive corresponding answers.
 
 # Define the server address and port
-service_name = 'MYGPT'
+service_name = 'Neuroengine-Large'
 prompt="Hello!"
 
 api=Neuroengine(service_name=service_name)
